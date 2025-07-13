@@ -1,4 +1,4 @@
-package com.tomisakae.accessibilityserviceapi
+package com.tomisakae.accessibilityserviceapi.presentation
 
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Context
@@ -12,7 +12,8 @@ import android.view.accessibility.AccessibilityManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.tomisakae.accessibilityserviceapi.service.AccessibilityApiService
+import com.tomisakae.accessibilityserviceapi.R
+import com.tomisakae.accessibilityserviceapi.infrastructure.accessibility.AccessibilityServiceManager
 import java.net.NetworkInterface
 import java.util.*
 
@@ -66,7 +67,7 @@ class MainActivity : AppCompatActivity() {
             enableServiceButton.text = "⚙️ Mở Cài đặt Accessibility"
 
             // Check if server is running
-            val isServerRunning = AccessibilityApiService.isServerRunning()
+            val isServerRunning = AccessibilityServiceManager.isServerRunning()
             val serverStatusText = if (isServerRunning) {
                 "🟢 API Server: Đang chạy"
             } else {
