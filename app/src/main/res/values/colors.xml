@@ -7,4 +7,16 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Dark theme colors -->
+    <color name="dark_background">#FF121212</color>
+    <color name="dark_surface">#FF1E1E1E</color>
+    <color name="dark_card">#FF2D2D2D</color>
+    <color name="dark_text_primary">#FFFFFFFF</color>
+    <color name="dark_text_secondary">#FFB3B3B3</color>
+    <color name="dark_accent">#FF03DAC6</color>
+    <color name="dark_success">#FF4CAF50</color>
+    <color name="dark_error">#FFF44336</color>
+    <color name="dark_warning">#FFFF9800</color>
+    <color name="dark_code_bg">#FF0D1117</color>
 </resources>

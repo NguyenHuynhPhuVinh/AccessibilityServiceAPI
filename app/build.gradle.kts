@@ -40,6 +40,19 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+
+    // HTTP Server
+    implementation("org.nanohttpd:nanohttpd:2.3.1")
+
+    // JSON parsing
+    implementation("com.google.code.gson:gson:2.10.1")
+
+    // Coroutines for async operations
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // Lifecycle components
+    implementation("androidx.lifecycle:lifecycle-service:2.7.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

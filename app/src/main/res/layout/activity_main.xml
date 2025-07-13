@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/dark_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/dark_text_primary"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Service Status Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_background"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📱 Trạng thái Service"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/dark_text_primary"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/statusTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/service_stopped"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/serverStatusTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/server_status"
+                android:textSize="14sp"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/enableServiceButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/enable_accessibility"
+                android:textSize="16sp"
+                android:backgroundTint="@color/dark_accent"
+                android:textColor="@color/dark_background" />
+
+        </LinearLayout>
+
+        <!-- Server URLs Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_background"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🌐 Server URLs"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/dark_text_primary"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/serverUrlTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/server_url"
+                android:textSize="14sp"
+                android:textIsSelectable="true"
+                android:background="@color/dark_code_bg"
+                android:padding="12dp"
+                android:textColor="@color/dark_accent"
+                android:fontFamily="monospace" />
+
+        </LinearLayout>
+
+        <!-- API Endpoints Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_background"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🔗 API Endpoints"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/dark_text_primary"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="📊 GET /health\n   → Kiểm tra trạng thái server\n\n🌳 GET /ui-tree\n   → Lấy cấu trúc UI hiện tại\n\n👆 POST /click\n   → Click vào tọa độ hoặc element\n   → Body: {&quot;x&quot;: 100, &quot;y&quot;: 200}\n\n📜 POST /scroll\n   → Cuộn màn hình\n   → Body: {&quot;direction&quot;: &quot;DOWN&quot;}\n\n⌨️ POST /input-text\n   → Nhập văn bản\n   → Body: {&quot;text&quot;: &quot;Hello World&quot;}"
+                android:textSize="12sp"
+                android:background="@color/dark_code_bg"
+                android:padding="12dp"
+                android:textColor="@color/dark_text_secondary"
+                android:fontFamily="monospace" />
+
+        </LinearLayout>
+
+        <!-- Instructions Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_background"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📋 Hướng dẫn sử dụng"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/dark_text_primary"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1. Nhấn nút 'Bật Accessibility Service'\n2. Tìm và bật 'AccessibilityServiceAPI'\n3. Quay lại app kiểm tra trạng thái\n4. Sử dụng API từ desktop/AI system\n\n💡 Tip: Copy URL và test bằng:\ncurl http://[IP]:8080/health"
+                android:textSize="14sp"
+                android:textColor="@color/dark_text_secondary"
+                android:lineSpacingExtra="4dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

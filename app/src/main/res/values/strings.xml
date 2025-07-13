@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">AccessibilityServiceAPI</string>
+    <string name="app_name">Accessibility Service API</string>
+    <string name="accessibility_service_description">Accessibility Service API cho phép AI tương tác với Android UI thông qua HTTP API</string>
+    <string name="service_running">Accessibility Service đang hoạt động</string>
+    <string name="service_stopped">Accessibility Service chưa được bật</string>
+    <string name="enable_accessibility">Bật Accessibility Service</string>
+    <string name="server_status">Trạng thái Server: %s</string>
+    <string name="server_url">Server URL: http://0.0.0.0:8080</string>
+    <string name="api_ready">API sẵn sàng sử dụng</string>
+    <string name="api_not_available">API không khả dụng</string>
 </resources>
