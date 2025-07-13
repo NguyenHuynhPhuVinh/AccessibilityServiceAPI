@@ -40,6 +40,8 @@ class ApiHttpServer(
                 // UI endpoints
                 uri == "/ui-tree" && method == Method.GET ->
                     uiController.getUiTree()
+                uri == "/ui-tree-compact" && method == Method.GET ->
+                    uiController.getUiTreeCompact()
                 uri == "/find-elements" && method == Method.POST ->
                     uiController.findElements(session)
                 uri == "/wait-for-element" && method == Method.POST ->

@@ -51,8 +51,9 @@ export const API_CONFIG = {
 
   // Headers mặc định
   DEFAULT_HEADERS: {
-    "Content-Type": "application/json",
+    "Content-Type": "application/json; charset=utf-8",
     Accept: "application/json",
+    "Accept-Charset": "utf-8",
   },
 };
 

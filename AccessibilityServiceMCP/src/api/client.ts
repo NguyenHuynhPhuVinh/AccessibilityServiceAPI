@@ -42,9 +42,9 @@ export class AccessibilityApiClient {
         if (error.code === "ECONNREFUSED") {
           throw new Error(
             `Không thể kết nối đến API server tại ${API_CONFIG.BASE_URL}. Vui lòng kiểm tra:\n` +
-            `1. Thiết bị Android đã bật API server\n` +
-            `2. IP address trong .env file đúng (hiện tại: ${API_CONFIG.HOST}:${API_CONFIG.PORT})\n` +
-            `3. Thiết bị và máy tính trong cùng mạng`
+              `1. Thiết bị Android đã bật API server\n` +
+              `2. IP address trong .env file đúng (hiện tại: ${API_CONFIG.HOST}:${API_CONFIG.PORT})\n` +
+              `3. Thiết bị và máy tính trong cùng mạng`
           );
         }
         throw error;
@@ -54,7 +54,8 @@ export class AccessibilityApiClient {
 
   // Health check
   async health(): Promise<HealthResponse> {
-    const response: AxiosResponse<ApiResponse<HealthResponse>> = await this.client.get("/health");
+    const response: AxiosResponse<ApiResponse<HealthResponse>> =
+      await this.client.get("/health");
     if (!response.data.success) {
       throw new Error(response.data.error || "Health check failed");
     }
@@ -63,18 +64,30 @@ export class AccessibilityApiClient {
 
   // UI Operations
   async getUiTree(): Promise<any> {
-    const response: AxiosResponse<ApiResponse> = await this.client.get("/ui-tree");
+    const response: AxiosResponse<ApiResponse> = await this.client.get(
+      "/ui-tree"
+    );
     if (!response.data.success) {
       throw new Error(response.data.error || "Failed to get UI tree");
     }
     return response.data.data;
   }
 
-  async findElements(request: FindElementsRequest): Promise<FindElementsResponse> {
-    const response: AxiosResponse<ApiResponse<FindElementsResponse>> = await this.client.post(
-      "/find-elements",
-      request
+  async getUiTreeCompact(): Promise<any> {
+    const response: AxiosResponse<ApiResponse> = await this.client.get(
+      "/ui-tree-compact"
     );
+    if (!response.data.success) {
+      throw new Error(response.data.error || "Failed to get compact UI tree");
+    }
+    return response.data.data;
+  }
+
+  async findElements(
+    request: FindElementsRequest
+  ): Promise<FindElementsResponse> {
+    const response: AxiosResponse<ApiResponse<FindElementsResponse>> =
+      await this.client.post("/find-elements", request);
     if (!response.data.success) {
       throw new Error(response.data.error || "Failed to find elements");
     }
@@ -83,42 +96,66 @@ export class AccessibilityApiClient {
 
   // Interaction Operations
   async click(request: ClickRequest): Promise<void> {
-    const response: AxiosResponse<ApiResponse> = await this.client.post("/click", request);
+    const response: AxiosResponse<ApiResponse> = await this.client.post(
+      "/click",
+      request
+    );
     if (!response.data.success) {
       throw new Error(response.data.error || "Click failed");
     }
   }
 
   async longClick(request: ClickRequest): Promise<void> {
-    const response: AxiosResponse<ApiResponse> = await this.client.post("/long-click", request);
+    const response: AxiosResponse<ApiResponse> = await this.client.post(
+      "/long-click",
+      request
+    );
     if (!response.data.success) {
       throw new Error(response.data.error || "Long click failed");
     }
   }
 
   async doubleClick(request: ClickRequest): Promise<void> {
-    const response: AxiosResponse<ApiResponse> = await this.client.post("/double-click", request);
+    const response: AxiosResponse<ApiResponse> = await this.client.post(
+      "/double-click",
+      request
+    );
     if (!response.data.success) {
       throw new Error(response.data.error || "Double click failed");
     }
   }
 
   async inputText(request: InputTextRequest): Promise<void> {
-    const response: AxiosResponse<ApiResponse> = await this.client.post("/input-text", request);
+    // Ensure UTF-8 encoding for Vietnamese text
+    const encodedRequest = {
+      ...request,
+      text: Buffer.from(request.text, "utf8").toString("utf8"),
+    };
+
+    const response: AxiosResponse<ApiResponse> = await this.client.post(
+      "/input-text",
+      encodedRequest
+    );
     if (!response.data.success) {
       throw new Error(response.data.error || "Input text failed");
     }
   }
 
   async scroll(request: ScrollRequest): Promise<void> {
-    const response: AxiosResponse<ApiResponse> = await this.client.post("/scroll", request);
+    const response: AxiosResponse<ApiResponse> = await this.client.post(
+      "/scroll",
+      request
+    );
     if (!response.data.success) {
       throw new Error(response.data.error || "Scroll failed");
     }
   }
 
   async swipe(request: SwipeRequest): Promise<void> {
-    const response: AxiosResponse<ApiResponse> = await this.client.post("/swipe", request);
+    const response: AxiosResponse<ApiResponse> = await this.client.post(
+      "/swipe",
+      request
+    );
     if (!response.data.success) {
       throw new Error(response.data.error || "Swipe failed");
     }
@@ -126,21 +163,27 @@ export class AccessibilityApiClient {
 
   // Navigation Operations
   async home(): Promise<void> {
-    const response: AxiosResponse<ApiResponse> = await this.client.post("/home");
+    const response: AxiosResponse<ApiResponse> = await this.client.post(
+      "/home"
+    );
     if (!response.data.success) {
       throw new Error(response.data.error || "Home navigation failed");
     }
   }
 
   async back(): Promise<void> {
-    const response: AxiosResponse<ApiResponse> = await this.client.post("/back");
+    const response: AxiosResponse<ApiResponse> = await this.client.post(
+      "/back"
+    );
     if (!response.data.success) {
       throw new Error(response.data.error || "Back navigation failed");
     }
   }
 
   async recent(): Promise<void> {
-    const response: AxiosResponse<ApiResponse> = await this.client.post("/recent");
+    const response: AxiosResponse<ApiResponse> = await this.client.post(
+      "/recent"
+    );
     if (!response.data.success) {
       throw new Error(response.data.error || "Recent apps navigation failed");
     }
@@ -148,28 +191,38 @@ export class AccessibilityApiClient {
 
   // App Management Operations
   async clickApp(request: AppRequest): Promise<void> {
-    const response: AxiosResponse<ApiResponse> = await this.client.post("/click-app", request);
+    const response: AxiosResponse<ApiResponse> = await this.client.post(
+      "/click-app",
+      request
+    );
     if (!response.data.success) {
       throw new Error(response.data.error || "Click app failed");
     }
   }
 
   async launchApp(request: AppRequest): Promise<void> {
-    const response: AxiosResponse<ApiResponse> = await this.client.post("/launch-app", request);
+    const response: AxiosResponse<ApiResponse> = await this.client.post(
+      "/launch-app",
+      request
+    );
     if (!response.data.success) {
       throw new Error(response.data.error || "Launch app failed");
     }
   }
 
   async closeApp(request: AppRequest): Promise<void> {
-    const response: AxiosResponse<ApiResponse> = await this.client.post("/close-app", request);
+    const response: AxiosResponse<ApiResponse> = await this.client.post(
+      "/close-app",
+      request
+    );
     if (!response.data.success) {
       throw new Error(response.data.error || "Close app failed");
     }
   }
 
   async getRecentApps(): Promise<RecentAppsResponse> {
-    const response: AxiosResponse<ApiResponse<RecentAppsResponse>> = await this.client.get("/recent-apps");
+    const response: AxiosResponse<ApiResponse<RecentAppsResponse>> =
+      await this.client.get("/recent-apps");
     if (!response.data.success) {
       throw new Error(response.data.error || "Failed to get recent apps");
     }
@@ -178,7 +231,8 @@ export class AccessibilityApiClient {
 
   // System Operations
   async getDeviceInfo(): Promise<DeviceInfoResponse> {
-    const response: AxiosResponse<ApiResponse<DeviceInfoResponse>> = await this.client.get("/device-info");
+    const response: AxiosResponse<ApiResponse<DeviceInfoResponse>> =
+      await this.client.get("/device-info");
     if (!response.data.success) {
       throw new Error(response.data.error || "Failed to get device info");
     }
@@ -186,7 +240,8 @@ export class AccessibilityApiClient {
   }
 
   async getScreenshot(): Promise<string> {
-    const response: AxiosResponse<ApiResponse<{ base64Image: string }>> = await this.client.get("/screenshot");
+    const response: AxiosResponse<ApiResponse<{ base64Image: string }>> =
+      await this.client.get("/screenshot");
     if (!response.data.success) {
       throw new Error(response.data.error || "Failed to get screenshot");
     }
@@ -194,21 +249,28 @@ export class AccessibilityApiClient {
   }
 
   async setVolume(request: VolumeRequest): Promise<void> {
-    const response: AxiosResponse<ApiResponse> = await this.client.post("/volume", request);
+    const response: AxiosResponse<ApiResponse> = await this.client.post(
+      "/volume",
+      request
+    );
     if (!response.data.success) {
       throw new Error(response.data.error || "Volume control failed");
     }
   }
 
   async openNotifications(): Promise<void> {
-    const response: AxiosResponse<ApiResponse> = await this.client.post("/open-notifications");
+    const response: AxiosResponse<ApiResponse> = await this.client.post(
+      "/open-notifications"
+    );
     if (!response.data.success) {
       throw new Error(response.data.error || "Open notifications failed");
     }
   }
 
   async openQuickSettings(): Promise<void> {
-    const response: AxiosResponse<ApiResponse> = await this.client.post("/open-quick-settings");
+    const response: AxiosResponse<ApiResponse> = await this.client.post(
+      "/open-quick-settings"
+    );
     if (!response.data.success) {
       throw new Error(response.data.error || "Open quick settings failed");
     }

@@ -117,7 +117,7 @@ export function registerUiElementsTools(server: McpServer) {
 
   server.tool(
     "get_ui_tree",
-    "Lấy cây UI đầy đủ của màn hình hiện tại - SỬ DỤNG KHI mới vào app/màn hình chưa biết đang ở đâu và có gì để làm. Sau đó dùng find_elements cho các tương tác cụ thể",
+    "Lấy cây UI đầy đủ của màn hình hiện tại - CHỈ dùng khi get_ui_tree_compact không đủ thông tin chi tiết. Ưu tiên dùng get_ui_tree_compact trước",
     {},
     async () => {
       try {
@@ -134,6 +134,85 @@ export function registerUiElementsTools(server: McpServer) {
                 ).toLocaleString()}\n\n` +
                 `**Root Node:**\n` +
                 `${JSON.stringify(uiTree.rootNode, null, 2)}`,
+            },
+          ],
+        };
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `❌ **Lỗi:** ${
+                error instanceof Error ? error.message : String(error)
+              }`,
+            },
+          ],
+        };
+      }
+    }
+  );
+
+  server.tool(
+    "get_ui_tree_compact",
+    "🎯 KHUYẾN KHÍCH - Lấy UI tree gọn với thông tin đầy đủ cho AI - SỬ DỤNG KHI mới vào app/màn hình để hiểu context và có gì để tương tác",
+    {},
+    async () => {
+      try {
+        const compactTree = await apiClient.getUiTreeCompact();
+
+        let responseText = `📱 **UI Tree Compact**\n\n`;
+        responseText += `📊 **Tổng quan:**\n`;
+        responseText += `- Total nodes: ${compactTree.summary.totalNodes}\n`;
+        responseText += `- Clickable: ${compactTree.summary.clickableCount}\n`;
+        responseText += `- Editable: ${compactTree.summary.editableCount}\n`;
+        responseText += `- Scrollable: ${compactTree.summary.scrollableCount}\n`;
+        responseText += `- Text: ${compactTree.summary.textCount}\n\n`;
+
+        if (compactTree.clickableElements.length > 0) {
+          responseText += `🖱️ **Clickable Elements:**\n`;
+          compactTree.clickableElements
+            .slice(0, 10)
+            .forEach((element: any, index: number) => {
+              responseText += `${index + 1}. ${
+                element.text || element.contentDescription || element.className
+              } `;
+              responseText += `at (${element.bounds.centerX},${element.bounds.centerY})\n`;
+            });
+          if (compactTree.clickableElements.length > 10) {
+            responseText += `... và ${
+              compactTree.clickableElements.length - 10
+            } elements khác\n`;
+          }
+          responseText += "\n";
+        }
+
+        if (compactTree.editableElements.length > 0) {
+          responseText += `✏️ **Editable Elements:**\n`;
+          compactTree.editableElements.forEach(
+            (element: any, index: number) => {
+              responseText += `${index + 1}. ${
+                element.text || element.contentDescription || element.className
+              } `;
+              responseText += `at (${element.bounds.centerX},${element.bounds.centerY})\n`;
+            }
+          );
+          responseText += "\n";
+        }
+
+        if (compactTree.structure.length > 0) {
+          responseText += `🏗️ **UI Structure:**\n`;
+          compactTree.structure.slice(0, 15).forEach((node: any) => {
+            const indent = "  ".repeat(node.level);
+            responseText += `${indent}- ${node.type}: ${node.label} (${node.bounds})\n`;
+          });
+          responseText += "\n";
+        }
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: responseText,
             },
           ],
         };
