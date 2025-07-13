@@ -48,31 +48,39 @@ Chỉnh sửa file `.mcp.json` và cập nhật IP của thiết bị Android:
 - Hoặc xem trong app **Accessibility Service API**
 - Hoặc dùng lệnh: `adb shell ip route`
 
-## Cấu hình với Model Context Protocol (MCP)
+## Sử dụng với Claude Desktop
 
-### Claude Desktop
+### 1. Bật Developer Mode
 
-1. Mở Claude Desktop và vào Settings
-2. Chọn mục Developer và bật Developer Mode
-3. Tìm file cấu hình tại:
-   - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
-   - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-4. Thêm cấu hình MCP vào file:
+1. Mở **Claude Desktop** → **Settings**
+2. Chọn **Developer** → Bật **Developer Mode**
+
+### 2. Cấu hình MCP Server
+
+Tìm file cấu hình Claude Desktop:
+
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+
+Thêm cấu hình vào file:
 
 ```json
 {
   "mcpServers": {
     "android-accessibility": {
       "command": "node",
-      "args": ["/path/to/AccessibilityServiceMCP/build/index.js"],
+      "args": ["/full/path/to/AccessibilityServiceMCP/build/index.js"],
       "env": {
-        "ACCESSIBILITY_API_HOST": "192.168.1.5",
-        "ACCESSIBILITY_API_PORT": "8080"
+        "ACCESSIBILITY_API_HOST": "192.168.1.5"
       }
     }
   }
 }
 ```
+
+### 3. Restart Claude Desktop
+
+Sau khi cấu hình xong, restart Claude Desktop để áp dụng thay đổi.
 
 ## Các Tools có sẵn
 
@@ -87,8 +95,8 @@ Chỉnh sửa file `.mcp.json` và cập nhật IP của thiết bị Android:
 
 ### 🔍 UI Operations
 
-- `find_elements` - Tìm kiếm UI elements với smart fallback
-- `get_ui_tree` - Lấy cây UI đầy đủ
+- `find_elements` - **🎯 TOOL CHÍNH** - AI sẽ dùng tool này để tìm elements trước khi thực hiện bất kỳ action nào. Có smart fallback system khi không tìm thấy elements
+- `get_ui_tree` - Lấy cây UI đầy đủ (chỉ dùng khi cần debug hoặc phân tích chi tiết)
 
 ### 👆 Touch Interactions
 
@@ -139,3 +147,88 @@ await navigate_home();
 await click_app({ appName: "YouTube" });
 await find_elements({ text: "AI video", actionType: "click" });
 ```
+
+## Cách AI sử dụng MCP Tools
+
+### 🎯 `find_elements` - Tool chính cho AI
+
+**AI sẽ ưu tiên sử dụng `find_elements` để tìm kiếm UI elements trước khi thực hiện bất kỳ action nào:**
+
+```typescript
+// AI workflow chuẩn:
+1. find_elements() → Tìm element cần tương tác
+2. click() / input_text() / scroll() → Thực hiện action với tọa độ từ bước 1
+```
+
+**Tại sao `find_elements` là tool quan trọng nhất:**
+
+- ✅ **Tìm chính xác** elements theo text, contentDescription, className
+- ✅ **Smart fallback** khi không tìm thấy → trả về alternatives
+- ✅ **Cung cấp tọa độ** để AI có thể click chính xác
+- ✅ **Hiểu context** thông qua `actionType` parameter
+
+### 🧠 Smart Fallback System
+
+API `find_elements` có hệ thống fallback thông minh:
+
+- **Tìm thấy elements** → Trả về kết quả chính xác với tọa độ
+- **Không tìm thấy** → Tự động fallback dựa trên `actionType`:
+  - `actionType: "click"` → Trả về tất cả clickable elements
+  - `actionType: "input"` → Trả về tất cả editable elements
+  - `actionType: "scroll"` → Trả về tất cả scrollable elements
+  - `actionType: "check"` → Trả về checkable/switch elements
+  - `actionType: "read"` → Trả về text elements
+
+**Lợi ích cho AI:**
+
+- 🤖 **Một API call duy nhất** thay vì gọi nhiều tools
+- 🎯 **Luôn có thông tin** để tiếp tục workflow
+- 📍 **Tọa độ chính xác** cho các action tiếp theo
+- 🔄 **Tự động adapt** khi UI thay đổi
+
+## Troubleshooting
+
+### ❌ Không kết nối được API
+
+```
+Error: Không thể kết nối đến API server
+```
+
+**Giải pháp:**
+
+1. Kiểm tra thiết bị Android đã bật API server
+2. Xác nhận IP address trong `.mcp.json` đúng
+3. Đảm bảo cùng mạng WiFi
+4. Test bằng: `curl http://[IP]:8080/health`
+
+### ❌ MCP Server không khởi động
+
+```
+Error: Cannot find module 'build/index.js'
+```
+
+**Giải pháp:**
+
+1. Chạy `npm run build` để build TypeScript
+2. Kiểm tra đường dẫn trong `.mcp.json` đúng
+3. Đảm bảo Node.js 18+
+
+### ❌ Elements không tìm thấy
+
+**Giải pháp:**
+
+1. Sử dụng `get_screenshot` để xem màn hình hiện tại
+2. Thử `get_ui_tree` để xem cấu trúc UI
+3. Sử dụng `actionType` để kích hoạt fallback
+4. Thử tìm bằng `contentDescription` thay vì `text`
+
+## Thông tin bổ sung
+
+- **Port mặc định**: 8080 (có thể thay đổi trong Android app)
+- **Timeout**: 15 giây cho mỗi API call
+- **Supported Android**: API 24+ (Android 7.0+)
+- **Network**: Chỉ hoạt động trong cùng mạng LAN
+
+## License
+
+MIT License - Xem file LICENSE để biết thêm chi tiết.

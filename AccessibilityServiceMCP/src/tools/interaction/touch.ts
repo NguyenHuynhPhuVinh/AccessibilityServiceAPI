@@ -8,10 +8,10 @@ import { apiClient } from "../../api/client.js";
 export function registerTouchTools(server: McpServer) {
   server.tool(
     "click",
-    "Click tại tọa độ cụ thể trên màn hình",
+    "Click tại tọa độ cụ thể trên màn hình - SỬ DỤNG SAU find_elements để lấy tọa độ chính xác",
     {
       x: z.number().describe("Tọa độ X"),
-      y: z.number().describe("Tọa độ Y")
+      y: z.number().describe("Tọa độ Y"),
     },
     async ({ x, y }) => {
       try {
@@ -20,18 +20,20 @@ export function registerTouchTools(server: McpServer) {
           content: [
             {
               type: "text",
-              text: `✅ **Click thành công** tại tọa độ (${x}, ${y})`
-            }
-          ]
+              text: `✅ **Click thành công** tại tọa độ (${x}, ${y})`,
+            },
+          ],
         };
       } catch (error) {
         return {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi click:** ${error instanceof Error ? error.message : String(error)}`
-            }
-          ]
+              text: `❌ **Lỗi click:** ${
+                error instanceof Error ? error.message : String(error)
+              }`,
+            },
+          ],
         };
       }
     }
@@ -39,10 +41,10 @@ export function registerTouchTools(server: McpServer) {
 
   server.tool(
     "long_click",
-    "Long click (nhấn giữ) tại tọa độ cụ thể",
+    "Long click (nhấn giữ) tại tọa độ cụ thể - SỬ DỤNG SAU find_elements để lấy tọa độ chính xác",
     {
       x: z.number().describe("Tọa độ X"),
-      y: z.number().describe("Tọa độ Y")
+      y: z.number().describe("Tọa độ Y"),
     },
     async ({ x, y }) => {
       try {
@@ -51,18 +53,20 @@ export function registerTouchTools(server: McpServer) {
           content: [
             {
               type: "text",
-              text: `✅ **Long click thành công** tại tọa độ (${x}, ${y})`
-            }
-          ]
+              text: `✅ **Long click thành công** tại tọa độ (${x}, ${y})`,
+            },
+          ],
         };
       } catch (error) {
         return {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi long click:** ${error instanceof Error ? error.message : String(error)}`
-            }
-          ]
+              text: `❌ **Lỗi long click:** ${
+                error instanceof Error ? error.message : String(error)
+              }`,
+            },
+          ],
         };
       }
     }
@@ -70,10 +74,10 @@ export function registerTouchTools(server: McpServer) {
 
   server.tool(
     "double_click",
-    "Double click tại tọa độ cụ thể",
+    "Double click tại tọa độ cụ thể - SỬ DỤNG SAU find_elements để lấy tọa độ chính xác",
     {
       x: z.number().describe("Tọa độ X"),
-      y: z.number().describe("Tọa độ Y")
+      y: z.number().describe("Tọa độ Y"),
     },
     async ({ x, y }) => {
       try {
@@ -82,18 +86,20 @@ export function registerTouchTools(server: McpServer) {
           content: [
             {
               type: "text",
-              text: `✅ **Double click thành công** tại tọa độ (${x}, ${y})`
-            }
-          ]
+              text: `✅ **Double click thành công** tại tọa độ (${x}, ${y})`,
+            },
+          ],
         };
       } catch (error) {
         return {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi double click:** ${error instanceof Error ? error.message : String(error)}`
-            }
-          ]
+              text: `❌ **Lỗi double click:** ${
+                error instanceof Error ? error.message : String(error)
+              }`,
+            },
+          ],
         };
       }
     }
@@ -101,13 +107,13 @@ export function registerTouchTools(server: McpServer) {
 
   server.tool(
     "swipe",
-    "Vuốt từ điểm này đến điểm khác",
+    "Vuốt từ điểm này đến điểm khác - SỬ DỤNG SAU find_elements để lấy tọa độ start/end chính xác",
     {
       startX: z.number().describe("Tọa độ X bắt đầu"),
       startY: z.number().describe("Tọa độ Y bắt đầu"),
       endX: z.number().describe("Tọa độ X kết thúc"),
       endY: z.number().describe("Tọa độ Y kết thúc"),
-      duration: z.number().optional().describe("Thời gian vuốt (ms)")
+      duration: z.number().optional().describe("Thời gian vuốt (ms)"),
     },
     async ({ startX, startY, endX, endY, duration }) => {
       try {
@@ -116,18 +122,22 @@ export function registerTouchTools(server: McpServer) {
           content: [
             {
               type: "text",
-              text: `✅ **Swipe thành công** từ (${startX}, ${startY}) đến (${endX}, ${endY})${duration ? ` trong ${duration}ms` : ""}`
-            }
-          ]
+              text: `✅ **Swipe thành công** từ (${startX}, ${startY}) đến (${endX}, ${endY})${
+                duration ? ` trong ${duration}ms` : ""
+              }`,
+            },
+          ],
         };
       } catch (error) {
         return {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi swipe:** ${error instanceof Error ? error.message : String(error)}`
-            }
-          ]
+              text: `❌ **Lỗi swipe:** ${
+                error instanceof Error ? error.message : String(error)
+              }`,
+            },
+          ],
         };
       }
     }
@@ -135,10 +145,10 @@ export function registerTouchTools(server: McpServer) {
 
   server.tool(
     "scroll",
-    "Cuộn màn hình theo hướng chỉ định",
+    "Cuộn màn hình theo hướng chỉ định - Có thể dùng độc lập hoặc sau find_elements với actionType='scroll' để tìm scrollable areas",
     {
       direction: z.enum(["UP", "DOWN", "LEFT", "RIGHT"]).describe("Hướng cuộn"),
-      distance: z.number().optional().describe("Khoảng cách cuộn (pixels)")
+      distance: z.number().optional().describe("Khoảng cách cuộn (pixels)"),
     },
     async ({ direction, distance }) => {
       try {
@@ -147,18 +157,22 @@ export function registerTouchTools(server: McpServer) {
           content: [
             {
               type: "text",
-              text: `✅ **Cuộn thành công** hướng ${direction}${distance ? ` (${distance}px)` : ""}`
-            }
-          ]
+              text: `✅ **Cuộn thành công** hướng ${direction}${
+                distance ? ` (${distance}px)` : ""
+              }`,
+            },
+          ],
         };
       } catch (error) {
         return {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi cuộn:** ${error instanceof Error ? error.message : String(error)}`
-            }
-          ]
+              text: `❌ **Lỗi cuộn:** ${
+                error instanceof Error ? error.message : String(error)
+              }`,
+            },
+          ],
         };
       }
     }
