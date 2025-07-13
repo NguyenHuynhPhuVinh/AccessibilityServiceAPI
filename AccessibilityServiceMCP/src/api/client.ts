@@ -73,16 +73,6 @@ export class AccessibilityApiClient {
     return response.data.data;
   }
 
-  async getUiTreeCompact(): Promise<any> {
-    const response: AxiosResponse<ApiResponse> = await this.client.get(
-      "/ui-tree-compact"
-    );
-    if (!response.data.success) {
-      throw new Error(response.data.error || "Failed to get compact UI tree");
-    }
-    return response.data.data;
-  }
-
   async findElements(
     request: FindElementsRequest
   ): Promise<FindElementsResponse> {
