@@ -32,6 +32,9 @@ class ApiServer {
     // API đọc màn hình và tương tác
     router.get('/api/screen/current', _handleGetCurrentScreen);
     router.get('/api/screen/elements', _handleGetCurrentElements);
+    router.get('/api/screen/clickable', _handleGetClickableElements);
+    router.get('/api/screen/editable', _handleGetEditableElements);
+    router.get('/api/screen/scrollable', _handleGetScrollableElements);
     router.post('/api/screen/click', _handleClickElement);
     router.post('/api/screen/tap', _handleTapCoordinate);
     router.post('/api/action', _handleGlobalAction);
@@ -148,20 +151,98 @@ class ApiServer {
     try {
       final elements = _accessibilityService.getCurrentElements();
       final currentPackage = _accessibilityService.getCurrentPackage();
-      
+
       final response = ApiResponse.success({
         'elements': elements,
         'count': elements.length,
         'currentPackage': currentPackage,
         'timestamp': DateTime.now().toIso8601String(),
       });
-      
+
       return Response.ok(
         jsonEncode(response.toJson((data) => data)),
         headers: {'Content-Type': 'application/json'},
       );
     } catch (e) {
       final response = ApiResponse<Map<String, dynamic>>.error('Failed to get current elements: $e');
+      return Response.internalServerError(
+        body: jsonEncode(response.toJson((data) => data)),
+        headers: {'Content-Type': 'application/json'},
+      );
+    }
+  }
+
+  /// Handler: Lấy danh sách elements có thể click
+  Future<Response> _handleGetClickableElements(Request request) async {
+    try {
+      final elements = _accessibilityService.getClickableElements();
+      final currentPackage = _accessibilityService.getCurrentPackage();
+
+      final response = ApiResponse.success({
+        'clickableElements': elements,
+        'count': elements.length,
+        'currentPackage': currentPackage,
+        'timestamp': DateTime.now().toIso8601String(),
+      });
+
+      return Response.ok(
+        jsonEncode(response.toJson((data) => data)),
+        headers: {'Content-Type': 'application/json'},
+      );
+    } catch (e) {
+      final response = ApiResponse<Map<String, dynamic>>.error('Failed to get clickable elements: $e');
+      return Response.internalServerError(
+        body: jsonEncode(response.toJson((data) => data)),
+        headers: {'Content-Type': 'application/json'},
+      );
+    }
+  }
+
+  /// Handler: Lấy danh sách elements có thể edit
+  Future<Response> _handleGetEditableElements(Request request) async {
+    try {
+      final elements = _accessibilityService.getEditableElements();
+      final currentPackage = _accessibilityService.getCurrentPackage();
+
+      final response = ApiResponse.success({
+        'editableElements': elements,
+        'count': elements.length,
+        'currentPackage': currentPackage,
+        'timestamp': DateTime.now().toIso8601String(),
+      });
+
+      return Response.ok(
+        jsonEncode(response.toJson((data) => data)),
+        headers: {'Content-Type': 'application/json'},
+      );
+    } catch (e) {
+      final response = ApiResponse<Map<String, dynamic>>.error('Failed to get editable elements: $e');
+      return Response.internalServerError(
+        body: jsonEncode(response.toJson((data) => data)),
+        headers: {'Content-Type': 'application/json'},
+      );
+    }
+  }
+
+  /// Handler: Lấy danh sách elements có thể scroll
+  Future<Response> _handleGetScrollableElements(Request request) async {
+    try {
+      final elements = _accessibilityService.getScrollableElements();
+      final currentPackage = _accessibilityService.getCurrentPackage();
+
+      final response = ApiResponse.success({
+        'scrollableElements': elements,
+        'count': elements.length,
+        'currentPackage': currentPackage,
+        'timestamp': DateTime.now().toIso8601String(),
+      });
+
+      return Response.ok(
+        jsonEncode(response.toJson((data) => data)),
+        headers: {'Content-Type': 'application/json'},
+      );
+    } catch (e) {
+      final response = ApiResponse<Map<String, dynamic>>.error('Failed to get scrollable elements: $e');
       return Response.internalServerError(
         body: jsonEncode(response.toJson((data) => data)),
         headers: {'Content-Type': 'application/json'},

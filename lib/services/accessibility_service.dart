@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_accessibility_service/flutter_accessibility_service.dart';
+import 'package:flutter_accessibility_service/constants.dart';
 import 'package:logger/logger.dart';
 import '../models/api_models.dart';
 
@@ -16,6 +17,7 @@ class AccessibilityServiceManager {
   Map<String, dynamic>? _currentScreenInfo;
   String? _currentPackage;
   List<Map<String, dynamic>> _currentElements = [];
+  dynamic _lastAccessibilityEvent; // Lưu event gần nhất để thực hiện actions
 
   Stream<Map<String, dynamic>> get eventStream => _eventController.stream;
 
@@ -114,6 +116,7 @@ class AccessibilityServiceManager {
   /// Cập nhật thông tin màn hình hiện tại từ accessibility event
   void _updateCurrentScreen(dynamic event) {
     try {
+      _lastAccessibilityEvent = event; // Lưu event để sử dụng sau
       _currentPackage = event.packageName;
 
       // Tạo thông tin màn hình hiện tại
@@ -123,26 +126,82 @@ class AccessibilityServiceManager {
         'isActive': event.isActive ?? false,
         'isFocused': event.isFocused ?? false,
         'screenBounds': _parseScreenBounds(event.screenBounds),
+        'capturedText': event.capturedText ?? '',
+        'windowType': event.windowType?.toString(),
         'timestamp': DateTime.now().toIso8601String(),
       };
 
-      // Cập nhật danh sách elements nếu có nodesText
-      if (event.nodesText != null && event.nodesText is List) {
-        _currentElements = [];
-        final nodes = event.nodesText as List;
-        for (int i = 0; i < nodes.length; i++) {
-          if (nodes[i] != null && nodes[i].toString().isNotEmpty) {
+      // Cập nhật danh sách elements từ subNodes và nodesText
+      _currentElements = [];
+
+      // Thêm element chính từ event
+      if (event.capturedText != null && event.capturedText!.isNotEmpty) {
+        _currentElements.add({
+          'id': 'main_element',
+          'text': event.capturedText,
+          'nodeId': event.nodeId,
+          'index': 0,
+          'type': 'main_element',
+          'isClickable': event.isClickable ?? false,
+          'isEditable': event.isEditable ?? false,
+          'isScrollable': event.isScrollable ?? false,
+          'actions': event.actions?.map((a) => a.toString()).toList() ?? [],
+        });
+      }
+
+      // Thêm elements từ subNodes
+      if (event.subNodes != null && event.subNodes is List) {
+        final subNodes = event.subNodes as List;
+        for (int i = 0; i < subNodes.length; i++) {
+          final node = subNodes[i];
+          if (node != null && node.text != null && node.text!.isNotEmpty) {
             _currentElements.add({
-              'id': 'element_$i',
-              'text': nodes[i].toString(),
-              'index': i,
-              'type': 'text_element',
+              'id': 'sub_element_$i',
+              'text': node.text,
+              'nodeId': node.nodeId,
+              'index': i + 1,
+              'type': 'sub_element',
+              'isClickable': node.isClickable ?? false,
+              'isEditable': node.isEditable ?? false,
+              'isScrollable': node.isScrollable ?? false,
+              'actions': node.actions?.map((a) => a.toString()).toList() ?? [],
             });
           }
         }
       }
 
-      _logger.d('Updated current screen: ${event.packageName} with ${_currentElements.length} elements');
+      // Thêm elements từ nodesText nếu có
+      if (event.nodesText != null && event.nodesText is List) {
+        final nodesText = event.nodesText as List;
+        for (int i = 0; i < nodesText.length; i++) {
+          if (nodesText[i] != null && nodesText[i].toString().isNotEmpty) {
+            // Kiểm tra xem text này đã có trong elements chưa
+            final existingElement = _currentElements.firstWhere(
+              (element) => element['text'] == nodesText[i].toString(),
+              orElse: () => {},
+            );
+
+            if (existingElement.isEmpty) {
+              _currentElements.add({
+                'id': 'text_element_$i',
+                'text': nodesText[i].toString(),
+                'nodeId': null,
+                'index': _currentElements.length,
+                'type': 'text_element',
+                'isClickable': false,
+                'isEditable': false,
+                'isScrollable': false,
+                'actions': [],
+              });
+            }
+          }
+        }
+      }
+
+      _logger.i('Updated current screen: ${event.packageName} with ${_currentElements.length} elements');
+      if (_currentElements.isNotEmpty) {
+        _logger.d('Elements found: ${_currentElements.map((e) => e['text']).join(', ')}');
+      }
     } catch (e) {
       _logger.e('Error updating current screen: $e');
     }
@@ -185,6 +244,21 @@ class AccessibilityServiceManager {
     return List.from(_currentElements);
   }
 
+  /// Lấy danh sách elements có thể click
+  List<Map<String, dynamic>> getClickableElements() {
+    return _currentElements.where((element) => element['isClickable'] == true).toList();
+  }
+
+  /// Lấy danh sách elements có thể edit
+  List<Map<String, dynamic>> getEditableElements() {
+    return _currentElements.where((element) => element['isEditable'] == true).toList();
+  }
+
+  /// Lấy danh sách elements có thể scroll
+  List<Map<String, dynamic>> getScrollableElements() {
+    return _currentElements.where((element) => element['isScrollable'] == true).toList();
+  }
+
   /// Lấy package hiện tại
   String? getCurrentPackage() {
     return _currentPackage;
@@ -199,12 +273,29 @@ class AccessibilityServiceManager {
       }
 
       final element = _currentElements[elementIndex];
-      _logger.i('Attempting to click element: ${element['text']}');
+      final nodeId = element['nodeId'];
+      final isClickable = element['isClickable'] ?? false;
 
-      // Thực hiện click action - cần nodeId từ event
-      // Đây là simplified version, có thể cần cải thiện
-      _logger.i('Click action simulated for element: ${element['text']}');
-      return true;
+      _logger.i('Attempting to click element: ${element['text']} (clickable: $isClickable)');
+
+      if (nodeId == null) {
+        _logger.w('Element has no nodeId, cannot perform click action');
+        return false;
+      }
+
+      if (!isClickable) {
+        _logger.w('Element is not clickable');
+        return false;
+      }
+
+      // Thực hiện click action với nodeId thật
+      final result = await FlutterAccessibilityService.performAction(
+        nodeId,
+        NodeAction.actionClick,
+      );
+
+      _logger.i('Click action result: $result for element: ${element['text']}');
+      return result;
 
     } catch (e) {
       _logger.e('Error clicking element: $e');
