@@ -63,7 +63,8 @@ data class FindElementsRequest(
     val contentDescription: String? = null,
     val resourceId: String? = null,
     val clickable: Boolean? = null,
-    val scrollable: Boolean? = null
+    val scrollable: Boolean? = null,
+    val actionType: String? = null  // "click", "input", "scroll", "check", "read"
 )
 
 /**

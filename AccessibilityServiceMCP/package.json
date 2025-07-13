@@ -1,0 +1,41 @@
+{
+  "name": "AccessibilityServiceMCP",
+  "version": "1.0.0",
+  "description": "MCP tương tác với AccessibilityService",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "AccessibilityServiceMCP": "./build/index.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "npx @modelcontextprotocol/inspector node ./build/index.js",
+    "build": "tsc"
+  },
+  "files": [
+    "build"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TomiSakae/AccessibilityServiceMCP.git"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol"
+  ],
+  "author": "TomiSakae",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TomiSakae/AccessibilityServiceMCP/issues"
+  },
+  "homepage": "https://github.com/TomiSakae/AccessibilityServiceMCP#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "axios": "^1.9.0",
+    "zod": "^3.25.23"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "typescript": "^5.8.3"
+  }
+}

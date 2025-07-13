@@ -38,11 +38,11 @@ class ApiHttpServer(
                     healthController.getHealth()
                 
                 // UI endpoints
-                uri == "/ui-tree" && method == Method.GET -> 
+                uri == "/ui-tree" && method == Method.GET ->
                     uiController.getUiTree()
-                uri == "/find-elements" && method == Method.POST -> 
+                uri == "/find-elements" && method == Method.POST ->
                     uiController.findElements(session)
-                uri == "/wait-for-element" && method == Method.POST -> 
+                uri == "/wait-for-element" && method == Method.POST ->
                     uiController.waitForElement(session)
                 
                 // Interaction endpoints
