@@ -120,8 +120,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="📊 GET /health\n   → Kiểm tra trạng thái server\n\n🌳 GET /ui-tree\n   → Lấy cấu trúc UI hiện tại\n\n👆 POST /click\n   → Click vào tọa độ hoặc element\n   → Body: {&quot;x&quot;: 100, &quot;y&quot;: 200}\n\n📜 POST /scroll\n   → Cuộn màn hình\n   → Body: {&quot;direction&quot;: &quot;DOWN&quot;}\n\n⌨️ POST /input-text\n   → Nhập văn bản\n   → Body: {&quot;text&quot;: &quot;Hello World&quot;}"
-                android:textSize="12sp"
+                android:text="📊 GET /health\n   → Kiểm tra trạng thái server\n\n🌳 GET /ui-tree\n   → Lấy cấu trúc UI hiện tại\n\n👆 POST /click\n   → Click vào tọa độ hoặc element\n   → Body: {&quot;x&quot;: 100, &quot;y&quot;: 200}\n\n📜 POST /scroll\n   → Cuộn màn hình\n   → Body: {&quot;direction&quot;: &quot;DOWN&quot;}\n\n⌨️ POST /input-text\n   → Nhập văn bản\n   → Body: {&quot;text&quot;: &quot;Hello World&quot;}\n\n👋 POST /swipe\n   → Vuốt màn hình (LEFT/RIGHT/UP/DOWN)\n   → Body: {&quot;direction&quot;: &quot;LEFT&quot;}\n\n🏠 POST /home\n   → Nhấn nút Home\n\n⬅️ POST /back\n   → Nhấn nút Back\n\n📱 POST /recent\n   → Mở Recent Apps\n\n🎯 POST /click-app\n   → Click app trên home screen\n   → Body: {&quot;appName&quot;: &quot;Chrome&quot;}"
+                android:textSize="11sp"
                 android:background="@color/dark_code_bg"
                 android:padding="12dp"
                 android:textColor="@color/dark_text_secondary"

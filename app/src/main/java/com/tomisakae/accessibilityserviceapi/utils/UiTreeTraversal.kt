@@ -33,7 +33,7 @@ object UiTreeTraversal {
     /**
      * Convert AccessibilityNodeInfo to UiNode recursively
      */
-    private fun convertToUiNode(node: AccessibilityNodeInfo): UiNode {
+    fun convertToUiNode(node: AccessibilityNodeInfo): UiNode {
         nodeCounter++
         
         // Generate unique ID for this node
