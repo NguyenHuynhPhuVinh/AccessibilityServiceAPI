@@ -46,4 +46,51 @@ export function registerInputTools(server: McpServer) {
       }
     }
   );
+
+  server.tool(
+    "keyboard_action",
+    "Thực hiện action trên bàn phím ảo - ENTER, BACK, HOME, RECENT, SEARCH, SEND, GO, DONE",
+    {
+      action: z
+        .enum([
+          "ENTER",
+          "BACK",
+          "HOME",
+          "RECENT",
+          "SEARCH",
+          "SEND",
+          "GO",
+          "DONE",
+        ])
+        .describe("Action cần thực hiện trên bàn phím"),
+    },
+    async ({ action }) => {
+      try {
+        const result = await apiClient.keyboardAction({ action });
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
+        };
+      } catch (error) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(
+                {
+                  error: error instanceof Error ? error.message : String(error),
+                },
+                null,
+                2
+              ),
+            },
+          ],
+        };
+      }
+    }
+  );
 }

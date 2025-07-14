@@ -109,4 +109,20 @@ data class SwipeResponse(
     val endPoint: Pair<Int, Int>?
 )
 
+/**
+ * Keyboard action request
+ */
+data class KeyboardActionRequest(
+    val action: String // "ENTER", "BACK", "HOME", "RECENT", "SEARCH", "SEND", "GO", "DONE"
+)
+
+/**
+ * Keyboard action response
+ */
+data class KeyboardActionResponse(
+    val success: Boolean,
+    val action: String,
+    val message: String
+)
+
 

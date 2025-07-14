@@ -56,8 +56,10 @@ class ApiHttpServer(
                     interactionController.performScroll(session)
                 uri == "/swipe" && method == Method.POST -> 
                     interactionController.performSwipe(session)
-                uri == "/input-text" && method == Method.POST -> 
+                uri == "/input-text" && method == Method.POST ->
                     interactionController.performInputText(session)
+                uri == "/keyboard-action" && method == Method.POST ->
+                    interactionController.performKeyboardAction(session)
 
                 
                 // System endpoints

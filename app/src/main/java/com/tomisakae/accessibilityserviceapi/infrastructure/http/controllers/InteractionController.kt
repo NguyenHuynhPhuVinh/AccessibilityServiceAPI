@@ -1,6 +1,9 @@
 package com.tomisakae.accessibilityserviceapi.infrastructure.http.controllers
 
+import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityNodeInfo
+import android.view.KeyEvent
+import android.app.Instrumentation
 import com.tomisakae.accessibilityserviceapi.domain.models.*
 import com.tomisakae.accessibilityserviceapi.infrastructure.accessibility.AccessibilityServiceManager
 import fi.iki.elonen.NanoHTTPD
@@ -187,9 +190,52 @@ class InteractionController(
         
         return createSuccessResponse(result)
     }
-    
 
-    
+    /**
+     * POST /keyboard-action
+     */
+    fun performKeyboardAction(session: NanoHTTPD.IHTTPSession): NanoHTTPD.Response {
+        val request = parseRequestBody<KeyboardActionRequest>(session)
+            ?: return createErrorResponse(400, "INVALID_REQUEST", "Invalid request body")
+
+        val success = when (request.action.uppercase()) {
+            "ENTER", "SEARCH", "SEND", "GO", "DONE" -> {
+                // Try multiple methods to send ENTER
+                sendEnterKey()
+            }
+            "BACK" -> serviceManager.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+            "HOME" -> serviceManager.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
+            "RECENT" -> serviceManager.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
+            else -> false
+        }
+
+        return createSuccessResponse(mapOf(
+            "success" to success,
+            "action" to request.action,
+            "message" to "Keyboard action performed"
+        ))
+    }
+
+    /**
+     * Send ENTER key - simplified working version
+     */
+    private fun sendEnterKey(): Boolean {
+        return try {
+            val instrumentation = Instrumentation()
+            instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_ENTER)
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+
+
+
+
+
+ 
+
     private fun findFocusedEditableNode(node: AccessibilityNodeInfo?): AccessibilityNodeInfo? {
         if (node == null) return null
         

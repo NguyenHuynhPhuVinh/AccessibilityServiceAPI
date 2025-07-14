@@ -92,6 +92,18 @@ export interface InputTextRequest {
   clearFirst?: boolean;
 }
 
+export interface KeyboardActionRequest {
+  action:
+    | "ENTER"
+    | "BACK"
+    | "HOME"
+    | "RECENT"
+    | "SEARCH"
+    | "SEND"
+    | "GO"
+    | "DONE";
+}
+
 // Scroll request
 export interface ScrollRequest {
   direction: "UP" | "DOWN" | "LEFT" | "RIGHT";

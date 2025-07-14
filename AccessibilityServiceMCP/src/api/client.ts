@@ -16,6 +16,7 @@ import type {
   VolumeRequest,
   DeviceInfoResponse,
   RecentAppsResponse,
+  KeyboardActionRequest,
 } from "../types/api.js";
 
 export class AccessibilityApiClient {
@@ -129,6 +130,17 @@ export class AccessibilityApiClient {
     if (!response.data.success) {
       throw new Error(response.data.error || "Input text failed");
     }
+  }
+
+  async keyboardAction(request: KeyboardActionRequest): Promise<any> {
+    const response: AxiosResponse<ApiResponse> = await this.client.post(
+      "/keyboard-action",
+      request
+    );
+    if (!response.data.success) {
+      throw new Error(response.data.error || "Keyboard action failed");
+    }
+    return response.data.data;
   }
 
   async scroll(request: ScrollRequest): Promise<void> {
