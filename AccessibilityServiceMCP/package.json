@@ -1,19 +1,22 @@
 {
-  "name": "AccessibilityServiceMCP",
-  "version": "1.0.0",
-  "description": "MCP tương tác với AccessibilityService",
-  "main": "index.js",
+  "name": "@tomisakae/accessibility-service-mcp",
+  "version": "1.0.1",
+  "description": "MCP server for Android Accessibility Service API automation",
+  "main": "./build/index.js",
   "type": "module",
   "bin": {
-    "AccessibilityServiceMCP": "./build/index.js"
+    "accessibility-service-mcp": "./build/index.js"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "node ./build/index.js",
     "dev": "npx @modelcontextprotocol/inspector node ./build/index.js",
-    "build": "tsc"
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
   },
   "files": [
-    "build"
+    "build/**/*",
+    "README.md",
+    "package.json"
   ],
   "repository": {
     "type": "git",
@@ -21,7 +24,12 @@
   },
   "keywords": [
     "mcp",
-    "model-context-protocol"
+    "model-context-protocol",
+    "android",
+    "accessibility-service",
+    "automation",
+    "ui-testing",
+    "mobile-automation"
   ],
   "author": "TomiSakae",
   "license": "MIT",
