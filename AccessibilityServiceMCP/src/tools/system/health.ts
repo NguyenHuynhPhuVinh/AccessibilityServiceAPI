@@ -11,17 +11,12 @@ export function registerHealthTools(server: McpServer) {
     {},
     async () => {
       try {
-        const health = await apiClient.health();
+        const result = await apiClient.health();
         return {
           content: [
             {
               type: "text",
-              text:
-                `✅ **API Server đang hoạt động**\n\n` +
-                `📊 **Thông tin:**\n` +
-                `- Trạng thái: ${health.status}\n` +
-                `- Uptime: ${Math.floor(health.uptime / 1000)} giây\n` +
-                `- Timestamp: ${new Date(health.timestamp).toLocaleString()}`,
+              text: JSON.stringify(result, null, 2),
             },
           ],
         };
@@ -30,9 +25,13 @@ export function registerHealthTools(server: McpServer) {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi kết nối API**\n\n${
-                error instanceof Error ? error.message : String(error)
-              }`,
+              text: JSON.stringify(
+                {
+                  error: error instanceof Error ? error.message : String(error),
+                },
+                null,
+                2
+              ),
             },
           ],
         };
@@ -46,18 +45,12 @@ export function registerHealthTools(server: McpServer) {
     {},
     async () => {
       try {
-        const deviceInfo = await apiClient.getDeviceInfo();
+        const result = await apiClient.getDeviceInfo();
         return {
           content: [
             {
               type: "text",
-              text:
-                `📱 **Thông tin thiết bị**\n\n` +
-                `- Model: ${deviceInfo.deviceModel}\n` +
-                `- Android: ${deviceInfo.androidVersion}\n` +
-                `- Màn hình: ${deviceInfo.screenWidth}x${deviceInfo.screenHeight}\n` +
-                `- Density: ${deviceInfo.density}\n` +
-                `- Orientation: ${deviceInfo.orientation}`,
+              text: JSON.stringify(result, null, 2),
             },
           ],
         };
@@ -66,9 +59,13 @@ export function registerHealthTools(server: McpServer) {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi:** ${
-                error instanceof Error ? error.message : String(error)
-              }`,
+              text: JSON.stringify(
+                {
+                  error: error instanceof Error ? error.message : String(error),
+                },
+                null,
+                2
+              ),
             },
           ],
         };
@@ -82,17 +79,16 @@ export function registerHealthTools(server: McpServer) {
     {},
     async () => {
       try {
-        const base64Image = await apiClient.getScreenshot();
+        const result = await apiClient.getScreenshot();
         return {
           content: [
             {
               type: "text",
-              text: "✅ **Screenshot đã được chụp**",
-            },
-            {
-              type: "image",
-              data: base64Image,
-              mimeType: "image/png",
+              text: JSON.stringify(
+                { message: "Screenshot captured successfully" },
+                null,
+                2
+              ),
             },
           ],
         };
@@ -101,9 +97,13 @@ export function registerHealthTools(server: McpServer) {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi chụp ảnh:** ${
-                error instanceof Error ? error.message : String(error)
-              }`,
+              text: JSON.stringify(
+                {
+                  error: error instanceof Error ? error.message : String(error),
+                },
+                null,
+                2
+              ),
             },
           ],
         };

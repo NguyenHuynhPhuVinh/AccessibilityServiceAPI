@@ -11,27 +11,33 @@ export function registerAppManagementTools(server: McpServer) {
     "Click vào app trên home screen hoặc app drawer",
     {
       appName: z.string().optional().describe("Tên app cần click"),
-      packageName: z.string().optional().describe("Package name của app")
+      packageName: z.string().optional().describe("Package name của app"),
     },
     async ({ appName, packageName }) => {
       try {
-        await apiClient.clickApp({ appName, packageName });
+        const result = await apiClient.clickApp({ appName, packageName });
         return {
           content: [
             {
               type: "text",
-              text: `✅ **Click app thành công:** ${appName || packageName}`
-            }
-          ]
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
         };
       } catch (error) {
         return {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi click app:** ${error instanceof Error ? error.message : String(error)}`
-            }
-          ]
+              text: JSON.stringify(
+                {
+                  error: error instanceof Error ? error.message : String(error),
+                },
+                null,
+                2
+              ),
+            },
+          ],
         };
       }
     }
@@ -41,27 +47,33 @@ export function registerAppManagementTools(server: McpServer) {
     "launch_app",
     "Mở app bằng package name",
     {
-      packageName: z.string().describe("Package name của app cần mở")
+      packageName: z.string().describe("Package name của app cần mở"),
     },
     async ({ packageName }) => {
       try {
-        await apiClient.launchApp({ packageName });
+        const result = await apiClient.launchApp({ packageName });
         return {
           content: [
             {
               type: "text",
-              text: `✅ **Mở app thành công:** ${packageName}`
-            }
-          ]
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
         };
       } catch (error) {
         return {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi mở app:** ${error instanceof Error ? error.message : String(error)}`
-            }
-          ]
+              text: JSON.stringify(
+                {
+                  error: error instanceof Error ? error.message : String(error),
+                },
+                null,
+                2
+              ),
+            },
+          ],
         };
       }
     }
@@ -71,27 +83,36 @@ export function registerAppManagementTools(server: McpServer) {
     "close_app",
     "Đóng app hiện tại",
     {
-      packageName: z.string().optional().describe("Package name của app cần đóng")
+      packageName: z
+        .string()
+        .optional()
+        .describe("Package name của app cần đóng"),
     },
     async ({ packageName }) => {
       try {
-        await apiClient.closeApp({ packageName });
+        const result = await apiClient.closeApp({ packageName });
         return {
           content: [
             {
               type: "text",
-              text: `✅ **Đóng app thành công:** ${packageName || "app hiện tại"}`
-            }
-          ]
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
         };
       } catch (error) {
         return {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi đóng app:** ${error instanceof Error ? error.message : String(error)}`
-            }
-          ]
+              text: JSON.stringify(
+                {
+                  error: error instanceof Error ? error.message : String(error),
+                },
+                null,
+                2
+              ),
+            },
+          ],
         };
       }
     }
@@ -103,31 +124,30 @@ export function registerAppManagementTools(server: McpServer) {
     {},
     async () => {
       try {
-        const recentApps = await apiClient.getRecentApps();
-        let responseText = `📱 **Ứng dụng gần đây (${recentApps.totalApps}):**\n\n`;
-        
-        recentApps.apps.forEach((app, index) => {
-          responseText += `${index + 1}. **${app.appName}**\n`;
-          responseText += `   - Package: ${app.packageName}\n`;
-          responseText += `   - Position: ${app.position}\n\n`;
-        });
+        const result = await apiClient.getRecentApps();
 
         return {
           content: [
             {
               type: "text",
-              text: responseText
-            }
-          ]
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
         };
       } catch (error) {
         return {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi:** ${error instanceof Error ? error.message : String(error)}`
-            }
-          ]
+              text: JSON.stringify(
+                {
+                  error: error instanceof Error ? error.message : String(error),
+                },
+                null,
+                2
+              ),
+            },
+          ],
         };
       }
     }

@@ -11,60 +11,69 @@ export function registerSystemControlTools(server: McpServer) {
     "Điều chỉnh âm lượng thiết bị",
     {
       direction: z.enum(["UP", "DOWN"]).describe("Tăng hoặc giảm âm lượng"),
-      stream: z.enum(["MUSIC", "RING", "NOTIFICATION", "ALARM"]).optional()
-        .describe("Loại âm thanh cần điều chỉnh")
+      stream: z
+        .enum(["MUSIC", "RING", "NOTIFICATION", "ALARM"])
+        .optional()
+        .describe("Loại âm thanh cần điều chỉnh"),
     },
     async ({ direction, stream }) => {
       try {
-        await apiClient.setVolume({ direction, stream });
+        const result = await apiClient.setVolume({ direction, stream });
         return {
           content: [
             {
               type: "text",
-              text: `✅ **Điều chỉnh âm lượng thành công:** ${direction} ${stream ? `(${stream})` : ""}`
-            }
-          ]
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
         };
       } catch (error) {
         return {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi điều chỉnh âm lượng:** ${error instanceof Error ? error.message : String(error)}`
-            }
-          ]
+              text: JSON.stringify(
+                {
+                  error: error instanceof Error ? error.message : String(error),
+                },
+                null,
+                2
+              ),
+            },
+          ],
         };
       }
     }
   );
 
-  server.tool(
-    "open_notifications",
-    "Mở panel thông báo",
-    {},
-    async () => {
-      try {
-        await apiClient.openNotifications();
-        return {
-          content: [
-            {
-              type: "text",
-              text: "✅ **Đã mở panel thông báo**"
-            }
-          ]
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `❌ **Lỗi:** ${error instanceof Error ? error.message : String(error)}`
-            }
-          ]
-        };
-      }
+  server.tool("open_notifications", "Mở panel thông báo", {}, async () => {
+    try {
+      const result = await apiClient.openNotifications();
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(
+              {
+                error: error instanceof Error ? error.message : String(error),
+              },
+              null,
+              2
+            ),
+          },
+        ],
+      };
     }
-  );
+  });
 
   server.tool(
     "open_quick_settings",
@@ -72,23 +81,29 @@ export function registerSystemControlTools(server: McpServer) {
     {},
     async () => {
       try {
-        await apiClient.openQuickSettings();
+        const result = await apiClient.openQuickSettings();
         return {
           content: [
             {
               type: "text",
-              text: "✅ **Đã mở quick settings**"
-            }
-          ]
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
         };
       } catch (error) {
         return {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi:** ${error instanceof Error ? error.message : String(error)}`
-            }
-          ]
+              text: JSON.stringify(
+                {
+                  error: error instanceof Error ? error.message : String(error),
+                },
+                null,
+                2
+              ),
+            },
+          ],
         };
       }
     }

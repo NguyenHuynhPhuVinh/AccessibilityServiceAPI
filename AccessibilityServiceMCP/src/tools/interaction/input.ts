@@ -11,27 +11,37 @@ export function registerInputTools(server: McpServer) {
     "Nhập text vào field đang focus",
     {
       text: z.string().describe("Text cần nhập"),
-      clearFirst: z.boolean().optional().default(false).describe("Xóa text hiện tại trước khi nhập")
+      clearFirst: z
+        .boolean()
+        .optional()
+        .default(false)
+        .describe("Xóa text hiện tại trước khi nhập"),
     },
     async ({ text, clearFirst }) => {
       try {
-        await apiClient.inputText({ text, clearFirst });
+        const result = await apiClient.inputText({ text, clearFirst });
         return {
           content: [
             {
               type: "text",
-              text: `✅ **Nhập text thành công:** "${text}"${clearFirst ? " (đã xóa text cũ)" : ""}`
-            }
-          ]
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
         };
       } catch (error) {
         return {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi nhập text:** ${error instanceof Error ? error.message : String(error)}`
-            }
-          ]
+              text: JSON.stringify(
+                {
+                  error: error instanceof Error ? error.message : String(error),
+                },
+                null,
+                2
+              ),
+            },
+          ],
         };
       }
     }

@@ -15,12 +15,12 @@ export function registerTouchTools(server: McpServer) {
     },
     async ({ x, y }) => {
       try {
-        await apiClient.click({ x, y });
+        const result = await apiClient.click({ x, y });
         return {
           content: [
             {
               type: "text",
-              text: `✅ **Click thành công** tại tọa độ (${x}, ${y})`,
+              text: JSON.stringify(result, null, 2),
             },
           ],
         };
@@ -29,9 +29,13 @@ export function registerTouchTools(server: McpServer) {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi click:** ${
-                error instanceof Error ? error.message : String(error)
-              }`,
+              text: JSON.stringify(
+                {
+                  error: error instanceof Error ? error.message : String(error),
+                },
+                null,
+                2
+              ),
             },
           ],
         };
@@ -48,12 +52,12 @@ export function registerTouchTools(server: McpServer) {
     },
     async ({ x, y }) => {
       try {
-        await apiClient.longClick({ x, y });
+        const result = await apiClient.longClick({ x, y });
         return {
           content: [
             {
               type: "text",
-              text: `✅ **Long click thành công** tại tọa độ (${x}, ${y})`,
+              text: JSON.stringify(result, null, 2),
             },
           ],
         };
@@ -62,9 +66,13 @@ export function registerTouchTools(server: McpServer) {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi long click:** ${
-                error instanceof Error ? error.message : String(error)
-              }`,
+              text: JSON.stringify(
+                {
+                  error: error instanceof Error ? error.message : String(error),
+                },
+                null,
+                2
+              ),
             },
           ],
         };
@@ -81,12 +89,12 @@ export function registerTouchTools(server: McpServer) {
     },
     async ({ x, y }) => {
       try {
-        await apiClient.doubleClick({ x, y });
+        const result = await apiClient.doubleClick({ x, y });
         return {
           content: [
             {
               type: "text",
-              text: `✅ **Double click thành công** tại tọa độ (${x}, ${y})`,
+              text: JSON.stringify(result, null, 2),
             },
           ],
         };
@@ -95,9 +103,13 @@ export function registerTouchTools(server: McpServer) {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi double click:** ${
-                error instanceof Error ? error.message : String(error)
-              }`,
+              text: JSON.stringify(
+                {
+                  error: error instanceof Error ? error.message : String(error),
+                },
+                null,
+                2
+              ),
             },
           ],
         };
@@ -117,14 +129,18 @@ export function registerTouchTools(server: McpServer) {
     },
     async ({ startX, startY, endX, endY, duration }) => {
       try {
-        await apiClient.swipe({ startX, startY, endX, endY, duration });
+        const result = await apiClient.swipe({
+          startX,
+          startY,
+          endX,
+          endY,
+          duration,
+        });
         return {
           content: [
             {
               type: "text",
-              text: `✅ **Swipe thành công** từ (${startX}, ${startY}) đến (${endX}, ${endY})${
-                duration ? ` trong ${duration}ms` : ""
-              }`,
+              text: JSON.stringify(result, null, 2),
             },
           ],
         };
@@ -133,9 +149,13 @@ export function registerTouchTools(server: McpServer) {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi swipe:** ${
-                error instanceof Error ? error.message : String(error)
-              }`,
+              text: JSON.stringify(
+                {
+                  error: error instanceof Error ? error.message : String(error),
+                },
+                null,
+                2
+              ),
             },
           ],
         };
@@ -152,14 +172,12 @@ export function registerTouchTools(server: McpServer) {
     },
     async ({ direction, distance }) => {
       try {
-        await apiClient.scroll({ direction, distance });
+        const result = await apiClient.scroll({ direction, distance });
         return {
           content: [
             {
               type: "text",
-              text: `✅ **Cuộn thành công** hướng ${direction}${
-                distance ? ` (${distance}px)` : ""
-              }`,
+              text: JSON.stringify(result, null, 2),
             },
           ],
         };
@@ -168,9 +186,13 @@ export function registerTouchTools(server: McpServer) {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi cuộn:** ${
-                error instanceof Error ? error.message : String(error)
-              }`,
+              text: JSON.stringify(
+                {
+                  error: error instanceof Error ? error.message : String(error),
+                },
+                null,
+                2
+              ),
             },
           ],
         };

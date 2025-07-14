@@ -5,61 +5,63 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { apiClient } from "../../api/client.js";
 
 export function registerNavigationTools(server: McpServer) {
-  server.tool(
-    "navigate_home",
-    "Về màn hình chính",
-    {},
-    async () => {
-      try {
-        await apiClient.home();
-        return {
-          content: [
-            {
-              type: "text",
-              text: "✅ **Đã về màn hình chính**"
-            }
-          ]
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `❌ **Lỗi:** ${error instanceof Error ? error.message : String(error)}`
-            }
-          ]
-        };
-      }
+  server.tool("navigate_home", "Về màn hình chính", {}, async () => {
+    try {
+      const result = await apiClient.home();
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(
+              {
+                error: error instanceof Error ? error.message : String(error),
+              },
+              null,
+              2
+            ),
+          },
+        ],
+      };
     }
-  );
+  });
 
-  server.tool(
-    "navigate_back",
-    "Quay lại màn hình trước",
-    {},
-    async () => {
-      try {
-        await apiClient.back();
-        return {
-          content: [
-            {
-              type: "text",
-              text: "✅ **Đã quay lại**"
-            }
-          ]
-        };
-      } catch (error) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `❌ **Lỗi:** ${error instanceof Error ? error.message : String(error)}`
-            }
-          ]
-        };
-      }
+  server.tool("navigate_back", "Quay lại màn hình trước", {}, async () => {
+    try {
+      const result = await apiClient.back();
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(
+              {
+                error: error instanceof Error ? error.message : String(error),
+              },
+              null,
+              2
+            ),
+          },
+        ],
+      };
     }
-  );
+  });
 
   server.tool(
     "open_recent_apps",
@@ -67,23 +69,29 @@ export function registerNavigationTools(server: McpServer) {
     {},
     async () => {
       try {
-        await apiClient.recent();
+        const result = await apiClient.recent();
         return {
           content: [
             {
               type: "text",
-              text: "✅ **Đã mở danh sách ứng dụng gần đây**"
-            }
-          ]
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
         };
       } catch (error) {
         return {
           content: [
             {
               type: "text",
-              text: `❌ **Lỗi:** ${error instanceof Error ? error.message : String(error)}`
-            }
-          ]
+              text: JSON.stringify(
+                {
+                  error: error instanceof Error ? error.message : String(error),
+                },
+                null,
+                2
+              ),
+            },
+          ],
         };
       }
     }
