@@ -2,7 +2,10 @@ package com.tomisakae.accessibilityserviceapi.infrastructure.http.controllers
 
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityNodeInfo
+import android.view.inputmethod.EditorInfo
 import android.view.KeyEvent
+import android.os.SystemClock
+import android.os.Build
 import android.app.Instrumentation
 import com.tomisakae.accessibilityserviceapi.domain.models.*
 import com.tomisakae.accessibilityserviceapi.infrastructure.accessibility.AccessibilityServiceManager
@@ -217,9 +220,49 @@ class InteractionController(
     }
 
     /**
-     * Send ENTER key - simplified working version
+     * Send ENTER key using multiple methods
      */
     private fun sendEnterKey(): Boolean {
+        // Method 1: Try ACTION_IME_ENTER for Android 30+
+        if (tryImeEnter()) {
+            return true
+        }
+
+        // Method 2: Try Instrumentation key event
+        if (tryInstrumentationEnter()) {
+            return true
+        }
+
+        // Method 3: Try to simulate ENTER by adding newline to text
+        if (tryTextNewline()) {
+            return true
+        }
+
+        return false
+    }
+
+    /**
+     * Method 1: ACTION_IME_ENTER for Android 30+
+     */
+    private fun tryImeEnter(): Boolean {
+        return try {
+            val rootNode = serviceManager.rootInActiveWindow
+            val focusedNode = findFocusedNode(rootNode)
+
+            if (focusedNode != null && Build.VERSION.SDK_INT >= 30) {
+                focusedNode.performAction(16908372) // ACTION_IME_ENTER
+            } else {
+                false
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    /**
+     * Method 2: Use Instrumentation to send ENTER key
+     */
+    private fun tryInstrumentationEnter(): Boolean {
         return try {
             val instrumentation = Instrumentation()
             instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_ENTER)
@@ -229,12 +272,62 @@ class InteractionController(
         }
     }
 
+    /**
+     * Method 3: Add newline character to trigger search
+     */
+    private fun tryTextNewline(): Boolean {
+        return try {
+            val rootNode = serviceManager.rootInActiveWindow
+            val focusedNode = findFocusedEditableNode(rootNode)
+
+            if (focusedNode != null) {
+                // Get current text and add newline
+                val currentText = focusedNode.text?.toString() ?: ""
+                val newText = currentText + "\n"
+
+                val success = focusedNode.performAction(
+                    AccessibilityNodeInfo.ACTION_SET_TEXT,
+                    android.os.Bundle().apply {
+                        putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, newText)
+                    }
+                )
+                success
+            } else {
+                false
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    /**
+     * Find focused node in the UI tree
+     */
+    private fun findFocusedNode(root: AccessibilityNodeInfo?): AccessibilityNodeInfo? {
+        if (root == null) return null
+
+        if (root.isFocused) {
+            return root
+        }
+
+        for (i in 0 until root.childCount) {
+            val child = root.getChild(i)
+            if (child != null) {
+                val focusedChild = findFocusedNode(child)
+                if (focusedChild != null) {
+                    return focusedChild
+                }
+                child.recycle()
+            }
+        }
+
+        return null
+    }
 
 
 
 
 
- 
 
     private fun findFocusedEditableNode(node: AccessibilityNodeInfo?): AccessibilityNodeInfo? {
         if (node == null) return null
