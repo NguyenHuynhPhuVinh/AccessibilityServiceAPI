@@ -13,6 +13,42 @@
 # Keep data models for JSON serialization
 -keep class com.tomisakae.accessibilityserviceapi.domain.models.** { *; }
 
+# Keep Android system classes for keyboard actions
+-keep class android.app.Instrumentation { *; }
+-keep class android.view.KeyEvent { *; }
+-keep class android.view.inputmethod.** { *; }
+-keep class android.accessibilityservice.AccessibilityService { *; }
+-keep class android.view.accessibility.AccessibilityNodeInfo { *; }
+
+# Keep methods used for keyboard actions
+-keepclassmembers class * {
+    public void sendKeyDownUpSync(android.view.KeyEvent);
+    public boolean performAction(int);
+    public boolean performAction(int, android.os.Bundle);
+}
+
+# Prevent obfuscation of reflection-based calls
+-keepattributes *Annotation*
+-keepattributes Signature
+-keepattributes InnerClasses
+-keepattributes EnclosingMethod
+
+# Keep native methods
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+# Don't obfuscate system services and managers
+-keep class * extends android.app.Service { *; }
+-keep class * extends android.accessibilityservice.AccessibilityService { *; }
+
+# Keep constants that might be used via reflection
+-keepclassmembers class * {
+    static final int ACTION_*;
+    static final int KEYCODE_*;
+    static final int GLOBAL_ACTION_*;
+}
+
 # Keep Gson classes
 -keepattributes Signature
 -keepattributes *Annotation*

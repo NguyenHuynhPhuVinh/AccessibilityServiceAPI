@@ -1,12 +1,10 @@
 {
   "mcpServers": {
     "android-accessibility": {
-      "command": "node",
-      "args": [
-        "C:\\Users\\tomis\\Documents\\AccessibilityServiceAPI\\AccessibilityServiceMCP\\build\\index.js"
-      ],
+      "command": "npx",
+      "args": ["-y", "@tomisakae/accessibility-service-mcp"],
       "env": {
-        "ACCESSIBILITY_API_HOST": "192.168.1.5"
+        "ACCESSIBILITY_API_HOST": "192.168.1.17"
       }
     }
   }
